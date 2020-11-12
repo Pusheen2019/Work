@@ -1,0 +1,17 @@
+.superior {
+    background-color: #C12062;
+    color: #FFFFFF;
+}
+table {
+    border: inset 3px #000000;
+    background-color: #DFDFDF;
+}
+body {
+    font: 13px 'Trebuchet MS','Segoe UI',Verdana, sans-serif;
+    background-color: #EFEFFE;
+}
+.titulo {
+    font: small-caps 25px Tahoma, sans-serif;
+    color: #255681;
+    background-color: #EFEFFE;
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lights out</title>
+    <script language="JavaScript">
+var i, j, IsOver, Size=5, StartTime, EndTime, Moves, IsRepeat;
+
+Pic= new Array(2);
+Pic[0] = new Image(); Pic[0].src = "lightsout0.gif"; 
+Pic[1] = new Image(); Pic[1].src = "lightsout1.gif";
+
+Fld=new Array(Size);
+for (i=0; i<Size; i++) Fld[i]=new Array(Size);
+
+PreFld=new Array(Size);
+for (i=0; i<Size; i++) PreFld[i]=new Array(Size);
+
+function SwitchFld(ii,jj)
+{ if (ii<0) return(false);
+  if (ii>=Size) return(false);
+  if (jj<0) return(false);
+  if (jj>=Size) return(false);
+  Fld[ii][jj]=1-Fld[ii][jj];
+  return(true);
+}
+
+function Init(IsNew)
+{ var ii, jj, nn;
+  if (IsNew)
+  { for (ii=0; ii<Size; ii++)
+    { for (jj=0; jj<Size; jj++) Fld[ii][jj]=0;
+    }
+    for (nn=0; nn<19; nn++)
+    { ii=Math.floor(Math.random()*Size);
+      jj=Math.floor(Math.random()*Size);
+      SwitchFld(ii-1,jj);
+      SwitchFld(ii+1,jj);
+      SwitchFld(ii,jj-1);
+      SwitchFld(ii,jj+1);
+      SwitchFld(ii,jj);
+    }
+    for (ii=0; ii<Size; ii++)
+    { for (jj=0; jj<Size; jj++) PreFld[ii][jj]=Fld[ii][jj];
+    }
+    IsRepeat=false;
+  }
+  else
+  { for (ii=0; ii<Size; ii++)
+    { for (jj=0; jj<Size; jj++) Fld[ii][jj]=PreFld[ii][jj];
+    }
+    IsRepeat=true;
+  }
+  IsOver=false;  
+  NMoves=0;
+  RefreshScreen(1);  
+  Now = new Date();
+  StartTime = Now.getTime() / 1000;
+}
+
+function Clicked(ii, jj)
+{ if (SwitchFld(ii-1,jj)) RefreshPic(ii-1,jj);
+  if (SwitchFld(ii+1,jj)) RefreshPic(ii+1,jj);
+  if (SwitchFld(ii,jj-1)) RefreshPic(ii,jj-1);
+  if (SwitchFld(ii,jj+1)) RefreshPic(ii,jj+1);
+  if (SwitchFld(ii,jj)) RefreshPic(ii,jj);
+  if (IsOver) return;
+  NMoves++;
+  OverTest();
+} 
+
+function OverTest()
+{ var ii, jj, nn=0;
+  for (ii=0; ii<Size; ii++)
+  { for (jj=0; jj<Size; jj++) nn+=Fld[ii][jj];
+  }
+  if (nn>0) return;
+  IsOver=true 
+  Now = new Date();
+  EndTime = Now.getTime() / 1000;
+  nn=Math.floor(EndTime - StartTime);
+  if (! IsRepeat)
+  { if (window.opener)
+    { if (window.opener.SetHighscores)
+        window.opener.SetHighscores("LightsOut","",nn,-1);
+    }
+  }
+  alert("Resolvete este jogo com "+NMoves+" movimentos em "+nn+" segundos !");
+}
+
+function RefreshPic(ii,jj)
+{ window.document.images[Size*jj+ii].src = Pic[Fld[ii][jj]].src;  
+}
+
+function RefreshScreen()
+{ var ii, jj;
+  for (ii=0; ii<Size; ii++)
+  { for (jj=0; jj<Size; jj++) 
+      window.document.images[Size*jj+ii].src = Pic[Fld[ii][jj]].src;
+  }  
+}
+
+function Help(){
+  alert("Quando estalas sobre uma lâmpada,as lâmpadas vizinhas mudam. Estale sobre as lâmpadas até todas elas estarem sem luz."); 
+}
+
+</script>
+</head>
+<body bgcolor=#AABBCC>
+<DIV ALIGN=center>
+<br>
+<table border=4 cellpadding=0 cellspacing=2 bgcolor=#CCCCCC>
+<script language="JavaScript">
+document.open("text/plain");
+for (j=0; j<Size; j++)
+{ document.writeln("<tr>");
+  for (i=0; i<Size; i++)
+    document.writeln("<td><IMG src=\"lightsout0.gif\" border=0 onMouseDown=\"Clicked("+i+","+j+")\"></td>");
+  document.writeln("</tr>");
+}
+document.close();
+</script>
+</table>
+<br>
+<table noborder>
+<tr>
+<td><form><input type=button value="&nbsp;&nbsp;Novo&nbsp;&nbsp;" width=100 style="width:100" onClick="javascript:Init(true)"></form></td>
+<td><form><input type=button value="Repetir" width=100 style="width:100" onClick="javascript:Init(false)"></form></td>
+<td><form><input type=button value="&nbsp;Ajuda&nbsp;" width=100 style="width:100" onClick="javascript:Help()"></form></td>
+</tr>
+</table>
+</DIV>
+<script language="JavaScript">
+  Init(true);
+</script>
+</body>
+</html>
